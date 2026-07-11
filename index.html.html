@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chá dos Noivos — Fernando & Priscila</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #f5f9ff 0%, #fff0f5 100%);
+    min-height: 100vh; padding: 1.5rem; color: #1e293b;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 1.5rem; }
+  .title { font-size: 2rem; font-weight: 600; margin: 0 0 0.4rem 0; color: #1e3a8a; }
+  .subtitle { font-size: 0.95rem; color: #64748b; margin: 0; }
+  .card {
+    background: white; border-radius: 12px; border: 1px solid #e2e8f0;
+    padding: 1.25rem; margin-bottom: 1.25rem;
+    box-shadow: 0 2px 8px rgba(30,58,138,0.08);
+  }
+  input {
+    width: 100%; padding: 0.7rem; border-radius: 8px;
+    border: 1px solid #cbd5e1; font-size: 0.95rem; margin-bottom: 0.9rem;
+  }
+  button {
+    padding: 0.7rem 1.25rem; border-radius: 8px; border: none;
+    cursor: pointer; font-size: 0.95rem; font-weight: 500;
+  }
+  .btn-primary  { background: #1e3a8a; color: white; }
+  .btn-secondary{ background: #e2e8f0; color: #1e3a8a; }
+  .btn-danger   { background: #dc2626; color: white; }
+  .btn-full     { width: 100%; display: block; }
+
+  /* Gift grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+  .gift-card {
+    background: white; border-radius: 10px; padding: 1.1rem;
+    border: 2px solid #bfdbfe; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  }
+  .gift-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(30,58,138,0.13); border-color: #1e3a8a; }
+  .gift-name { font-size: 0.95rem; font-weight: 600; color: #1e3a8a; margin: 0 0 0.3rem 0; }
+  .gift-desc { font-size: 0.8rem; color: #64748b; margin: 0 0 0.6rem 0; }
+  .badge {
+    display: inline-block; background: #dbeafe; color: #1e3a8a;
+    padding: 0.15rem 0.6rem; border-radius: 12px; font-size: 0.72rem; font-weight: 500;
+  }
+  .badge-claimed { background: #fecaca; color: #991b1b; }
+
+  /* Modal */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1rem;
+  }
+  .modal {
+    background: white; border-radius: 16px; padding: 2rem;
+    max-width: 420px; width: 100%; text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .modal h2 { color: #1e3a8a; margin: 0 0 0.4rem 0; }
+  .modal p  { color: #64748b; margin: 0 0 1.2rem 0; font-size: 0.9rem; }
+  .msg-success { background: #dcfce7; color: #166534; padding: 0.9rem; border-radius: 8px; margin-bottom: 0.9rem; border: 1px solid #86efac; }
+  .msg-error   { background: #fee2e2; color: #991b1b; padding: 0.9rem; border-radius: 8px; margin-bottom: 0.9rem; border: 1px solid #fca5a5; }
+
+  /* Admin */
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th { padding: 0.8rem; text-align: left; color: #1e3a8a; background: #f3f4f6; border-bottom: 2px solid #cbd5e1; }
+  td { padding: 0.8rem; color: #64748b; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+  .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+
+  @media (max-width: 700px) { body { padding: 1rem; } .admin-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// PREVIEW MODE
+let gifts = [], selectedGift = null, screen = 'gifts';
+let adminToken = null, adminSelections = [], confirmedSelection = null;
+let errorMsg = '', successMsg = '', searchTerm = '';
+
+
+// ---- PREVIEW: in-memory mock ----
+let mockGifts = [
+  { id:1, name:"Copos de Vidro Americano", description:"Jogo de Copos Amazon Nadir", category:"Cozinha", claimed:false },
+  { id:2, name:"Pote de Vidro Marinex", description:"Marinex 500 ml", category:"Cozinha", claimed:false },
+  { id:3, name:"Pano de Prato", description:"Kit de panos de prato", category:"Cozinha", claimed:false },
+  { id:4, name:"Jogo de Colheres de Silicone", description:"2 colheres de silicone", category:"Cozinha", claimed:false },
+  { id:5, name:"Abridor de Latas e Garrafas", description:"Abridor Inox 3 em 1", category:"Cozinha", claimed:false },
+  { id:6, name:"Ralador", description:"Inox 4 faces multiuso", category:"Cozinha", claimed:false },
+  { id:7, name:"Travessa de Vidro Marinex", description:"Refrataria retangular 2L", category:"Cozinha", claimed:false },
+  { id:8, name:"Forma para Bolo Pequena", description:"Forma retangular pequena", category:"Cozinha", claimed:false },
+  { id:9, name:"Assadeira de Vidro", description:"Refrataria vai ao forno", category:"Cozinha", claimed:false },
+  { id:10, name:"Medidor Culinario", description:"Medidor culinario de vidro", category:"Cozinha", claimed:false },
+  { id:11, name:"Porta-Temperos", description:"Conjunto com 5 potes e suporte", category:"Cozinha", claimed:false },
+  { id:12, name:"Espatulas", description:"Silicone antiaderente, 3 pecas", category:"Cozinha", claimed:false },
+  { id:13, name:"Luvas T\u00e9rmicas", description:"Silicone para forno, kit 2 pe\u00e7as", category:"Cozinha", claimed:false },
+  { id:14, name:"Descanso de Panela", description:"Silicone antiderrapante, kit 4 unidades", category:"Cozinha", claimed:false },
+  { id:15, name:"Porta Frios", description:"Porta Frios duplo de vidro", category:"Cozinha", claimed:false },
+  { id:16, name:"Tapete para Banheiro", description:"Antiderrapante, conjunto 3 pe\u00e7as", category:"Banheiro", claimed:false },
+  { id:17, name:"Lixeira para Banheiro", description:"Inox com pedal 3L", category:"Banheiro", claimed:false },
+  { id:18, name:"Saboneteira", description:"Design moderno com drenagem", category:"Banheiro", claimed:false },
+  { id:19, name:"Porta-Escovas de Dente", description:"Suporte duplo organizador", category:"Banheiro", claimed:false },
+  { id:20, name:"Cesto para Roupas", description:"Cesto de plastico ou bambu 40L", category:"Banheiro", claimed:false },
+  { id:21, name:"Kit de Banheiro", description:"A\u00e7o inox, conjunto completo", category:"Banheiro", claimed:false },
+  { id:22, name:"Difusor de Aromas", description:"Com varetas 300ml", category:"Decora\u00e7\u00e3o", claimed:false },
+  { id:23, name:"Porta-Papel Higi\u00eanico", description:"Suporte a\u00e7o inox adesivo", category:"Banheiro", claimed:false },
+];
+
+
+let mockSelections = [];
+
+async function apiFetch(path, opts = {}) {
+  const body = opts.body ? JSON.parse(opts.body) : {};
+  const method = (opts.method || 'GET').toUpperCase();
+  if (path === '/gifts') return mockGifts.map(g => ({...g}));
+  if (path === '/login') {
+    return { existingSelection: mockSelections.find(s => s.guestEmail.toLowerCase() === body.email.toLowerCase()) || null };
+  }
+  if (path === '/select') {
+    if (mockSelections.find(s => s.guestEmail.toLowerCase() === body.guestEmail.toLowerCase()))
+      throw new Error('Voce ja selecionou um presente');
+    if (mockSelections.find(s => s.giftId === body.giftId))
+      throw new Error('Este presente ja foi selecionado por outro convidado');
+    const gift = mockGifts.find(g => g.id === body.giftId);
+    const sel = { id: Date.now(), giftId: gift.id, giftName: gift.name, guestName: body.guestName,
+      guestEmail: body.guestEmail, date: new Date().toLocaleDateString('pt-BR') };
+    mockSelections.push(sel);
+    mockGifts = mockGifts.map(g => g.id === body.giftId ? {...g, claimed:true} : g);
+    return { selection: sel };
+  }
+  if (path === '/admin/login') {
+    if (body.password !== 'fernando2026') throw new Error('Senha incorreta');
+    return { ok: true };
+  }
+  if (path === '/admin/selections') return mockSelections;
+  if (path.startsWith('/admin/selections/') && method === 'DELETE') {
+    const id = Number(path.split('/').pop());
+    const sel = mockSelections.find(s => s.id === id);
+    mockSelections = mockSelections.filter(s => s.id !== id);
+    mockGifts = mockGifts.map(g => g.id === sel.giftId ? {...g, claimed:false} : g);
+    return { ok: true };
+  }
+  if (path === '/admin/gifts' && method === 'POST') {
+    const newG = { id: Math.max(...mockGifts.map(g=>g.id))+1, claimed:false,
+      name:body.name, description:body.description||'', category:body.category||'' };
+    mockGifts.push(newG); return newG;
+  }
+  if (path.startsWith('/admin/gifts/') && method === 'DELETE') {
+    const id = Number(path.split('/').pop());
+    if (mockSelections.some(s=>s.giftId===id)) throw new Error('Presente ja selecionado');
+    mockGifts = mockGifts.filter(g=>g.id!==id); return { ok: true };
+  }
+}
+async function loadGifts() { gifts = await apiFetch('/gifts'); }
+
+
+async function confirmSelection() {
+  const name  = document.getElementById('modal-name').value.trim();
+  const email = document.getElementById('modal-email').value.trim();
+  errorMsg = '';
+  if (!name)  { errorMsg = 'Por favor, informe seu nome'; return render(); }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errorMsg = 'Email inválido'; return render(); }
+  try {
+    const res = await apiFetch('/select', {
+      method: 'POST', body: JSON.stringify({ giftId: selectedGift.id, guestName: name, guestEmail: email })
+    });
+    confirmedSelection = res.selection; selectedGift = null; screen = 'confirmed'; render();
+  } catch (e) {
+    if (e.message.includes('já selecionou') || e.message.includes('ja selecionou')) {
+      try {
+        const login = await apiFetch('/login', { method: 'POST', body: JSON.stringify({ email }) });
+        if (login.existingSelection) { confirmedSelection = login.existingSelection; selectedGift = null; screen = 'confirmed'; render(); return; }
+      } catch (_) {}
+    }
+    await loadGifts(); errorMsg = e.message; render();
+  }
+}
+
+async function handleAdminLogin() {
+  const pw = document.getElementById('admin-pw').value; errorMsg = '';
+  try {
+    await apiFetch('/admin/login', { method: 'POST', body: JSON.stringify({ password: pw }) });
+    adminToken = pw; await loadGifts();
+    adminSelections = await apiFetch('/admin/selections', { headers: { 'x-admin-password': adminToken } });
+    screen = 'admin'; render();
+  } catch (e) { errorMsg = e.message; render(); }
+}
+
+async function deleteSelection(id) {
+  if (!confirm('Remover seleção? O convidado poderá escolher outro presente.')) return;
+  await apiFetch('/admin/selections/' + id, { method: 'DELETE', headers: { 'x-admin-password': adminToken } });
+  await loadGifts();
+  adminSelections = await apiFetch('/admin/selections', { headers: { 'x-admin-password': adminToken } });
+  successMsg = 'Removido com sucesso'; render();
+  setTimeout(() => { successMsg = ''; render(); }, 2500);
+}
+
+async function addGift() {
+  const name = document.getElementById('g-name').value.trim();
+  const desc = document.getElementById('g-desc').value.trim();
+  const cat  = document.getElementById('g-cat').value.trim();
+  if (!name) { errorMsg = 'Nome obrigatório'; return render(); }
+  await apiFetch('/admin/gifts', {
+    method: 'POST', headers: { 'x-admin-password': adminToken },
+    body: JSON.stringify({ name, description: desc, category: cat })
+  });
+  await loadGifts();
+  ['g-name','g-desc','g-cat'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  successMsg = 'Presente adicionado!'; render();
+  setTimeout(() => { successMsg = ''; render(); }, 2500);
+}
+
+async function deleteGift(id) {
+  if (!confirm('Deletar este presente?')) return;
+  try {
+    await apiFetch('/admin/gifts/' + id, { method: 'DELETE', headers: { 'x-admin-password': adminToken } });
+    await loadGifts(); render();
+  } catch(e) { errorMsg = e.message; render(); }
+}
+
+function giftCardHTML(g) {
+  return `
+    <div class="gift-card" data-id="${g.id}">
+      <div class="gift-name">${g.name}</div>
+      <div class="gift-desc">${g.description}</div>
+      <span class="badge">${g.category}</span>
+    </div>`;
+}
+
+function render() {
+  document.getElementById('app').innerHTML = buildHTML();
+  attachEvents();
+}
+
+function buildHTML() {
+  if (screen === 'gifts') {
+    const available = gifts.filter(g => !g.claimed);
+    const filtered  = available.filter(g =>
+      g.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (g.category||'').toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    return `
+      <div class="container">
+        <div class="header">
+          <h1 class="title">🎁 Chá dos Noivos</h1>
+          <p class="subtitle">Fernando &amp; Priscila · 15/08/2026</p>
+        </div>
+        <div class="card">
+          <input id="search" type="text" placeholder="Buscar presente ou categoria..." value="${searchTerm}" />
+          <div class="grid">${filtered.map(giftCardHTML).join('')}</div>
+          ${filtered.length === 0 ? '<p style="text-align:center;color:#64748b;padding:2rem;">Nenhum presente disponível.</p>' : ''}
+        </div>
+        <div style="text-align:center;">
+          <button class="btn-secondary" id="goto-admin">Painel Administrativo</button>
+        </div>
+      </div>
+      ${selectedGift ? `
+      <div class="overlay" id="overlay">
+        <div class="modal">
+          <h2>${selectedGift.name}</h2>
+          <p>${selectedGift.description} · <span class="badge">${selectedGift.category}</span></p>
+          ${errorMsg ? `<div class="msg-error">✗ ${errorMsg}</div>` : ''}
+          <input id="modal-name"  type="text"  placeholder="Seu nome" />
+          <input id="modal-email" type="email" placeholder="Seu email" />
+          <button class="btn-primary btn-full" id="btn-confirm">Confirmar presente</button>
+          <button class="btn-secondary btn-full" id="btn-cancel" style="margin-top:0.5rem;">Cancelar</button>
+        </div>
+      </div>` : ''}`;
+  }
+
+  if (screen === 'confirmed') {
+    const s = confirmedSelection;
+    return `
+      <div style="max-width:440px;margin:3rem auto 0;">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:3rem;margin-bottom:0.5rem;">🎉</div>
+          <h2 style="color:#1e3a8a;margin:0 0 0.5rem 0;">Presente escolhido!</h2>
+          <h3 style="color:#1e3a8a;font-size:1.3rem;margin:1.5rem 0 0.4rem 0;">${s.giftName}</h3>
+          <p style="color:#64748b;margin-bottom:1.5rem;">Obrigado, <strong>${s.guestName}</strong>!<br>Registrado em ${s.date}. ❤️</p>
+          <button class="btn-secondary btn-full" id="btn-back">Voltar para a lista</button>
+        </div>
+      </div>`;
+  }
+
+  if (screen === 'admin-login') {
+    return `
+      <div style="max-width:380px;margin:4rem auto 0;">
+        <div class="card">
+          <h2 style="color:#1e3a8a;text-align:center;margin-top:0;">Painel Administrativo</h2>
+          ${errorMsg ? `<div class="msg-error">${errorMsg}</div>` : ''}
+          <input id="admin-pw" type="password" placeholder="Senha" />
+          <button class="btn-primary btn-full" id="btn-admin-login">Entrar</button>
+          <button class="btn-secondary btn-full" id="btn-back" style="margin-top:0.5rem;">Voltar</button>
+        </div>
+      </div>`;
+  }
+
+  if (screen === 'admin') {
+    return `
+      <div class="container">
+        <div class="header">
+          <h1 class="title">📊 Painel Administrativo</h1>
+          <p class="subtitle">${adminSelections.length} de ${gifts.length} presentes selecionados</p>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
+          <button class="btn-secondary" id="btn-admin-out">Sair</button>
+        </div>
+        ${successMsg ? `<div class="msg-success">✓ ${successMsg}</div>` : ''}
+        ${errorMsg   ? `<div class="msg-error">✗ ${errorMsg}</div>`   : ''}
+        <div class="admin-grid" style="margin-bottom:1.5rem;">
+          <div>
+            <h3 style="color:#1e3a8a;margin-top:0;">Adicionar Presente</h3>
+            <div class="card">
+              <input id="g-name" type="text" placeholder="Nome do presente" />
+              <input id="g-desc" type="text" placeholder="Descrição" />
+              <input id="g-cat"  type="text" placeholder="Categoria" />
+              <button class="btn-primary btn-full" id="btn-add-gift">Adicionar</button>
+            </div>
+          </div>
+          <div>
+            <h3 style="color:#1e3a8a;margin-top:0;">Presentes (${gifts.filter(g=>!g.claimed).length} disponíveis)</h3>
+            <div style="max-height:460px;overflow-y:auto;">
+              ${gifts.map(g => `
+                <div class="card" style="padding:0.85rem;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.75rem;">
+                  <div style="flex:1;">
+                    <div style="font-weight:600;color:#1e3a8a;font-size:0.9rem;">${g.name}</div>
+                    <span class="badge ${g.claimed?'badge-claimed':''}">${g.claimed?'✓ Selecionado':'Disponível'}</span>
+                  </div>
+                  <button class="btn-danger" style="padding:0.35rem 0.65rem;font-size:0.8rem;" data-del-gift="${g.id}">✕</button>
+                </div>`).join('')}
+            </div>
+          </div>
+        </div>
+        <h3 style="color:#1e3a8a;">Seleções dos convidados</h3>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table>
+            <thead><tr><th>Convidado</th><th>Email</th><th>Presente</th><th>Data</th><th></th></tr></thead>
+            <tbody>
+              ${adminSelections.length === 0
+                ? `<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:#94a3b8;">Nenhuma seleção ainda</td></tr>`
+                : adminSelections.map(s => `
+                  <tr>
+                    <td style="color:#1e3a8a;font-weight:500;">${s.guestName}</td>
+                    <td>${s.guestEmail}</td>
+                    <td>${s.giftName}</td>
+                    <td style="font-size:0.82rem;">${s.date}</td>
+                    <td><button class="btn-danger" style="padding:0.35rem 0.65rem;font-size:0.8rem;" data-del-sel="${s.id}">Remover</button></td>
+                  </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+}
+
+function attachEvents() {
+  document.querySelectorAll('.gift-card').forEach(el =>
+    el.addEventListener('click', () => { selectedGift = gifts.find(g => g.id === Number(el.dataset.id)); errorMsg = ''; render(); }));
+
+  const search = document.getElementById('search');
+  if (search) search.addEventListener('input', e => {
+    searchTerm = e.target.value;
+    const filtered = gifts.filter(g => !g.claimed).filter(g =>
+      g.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (g.category||'').toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const grid = document.querySelector('.grid');
+    if (grid) {
+      grid.innerHTML = filtered.map(giftCardHTML).join('') +
+        (filtered.length === 0 ? '<p style="text-align:center;color:#64748b;padding:2rem;grid-column:1/-1;">Nenhum presente encontrado.</p>' : '');
+      grid.querySelectorAll('.gift-card').forEach(el =>
+        el.addEventListener('click', () => { selectedGift = gifts.find(g => g.id === Number(el.dataset.id)); errorMsg = ''; render(); }));
+    }
+  });
+
+  const gotoAdmin = document.getElementById('goto-admin');
+  if (gotoAdmin) gotoAdmin.addEventListener('click', () => { errorMsg=''; screen='admin-login'; render(); });
+
+  const btnConfirm = document.getElementById('btn-confirm');
+  if (btnConfirm) btnConfirm.addEventListener('click', confirmSelection);
+
+  const btnCancel = document.getElementById('btn-cancel');
+  if (btnCancel) btnCancel.addEventListener('click', () => { selectedGift=null; errorMsg=''; render(); });
+
+  const overlay = document.getElementById('overlay');
+  if (overlay) overlay.addEventListener('click', e => { if(e.target===overlay){selectedGift=null;errorMsg='';render();} });
+
+  const modalEmail = document.getElementById('modal-email');
+  if (modalEmail) modalEmail.addEventListener('keypress', e => { if(e.key==='Enter') confirmSelection(); });
+
+  const btnBack = document.getElementById('btn-back');
+  if (btnBack) btnBack.addEventListener('click', () => { screen='gifts'; errorMsg=''; loadGifts().then(render); });
+
+  const btnAdminLogin = document.getElementById('btn-admin-login');
+  if (btnAdminLogin) btnAdminLogin.addEventListener('click', handleAdminLogin);
+  const adminPw = document.getElementById('admin-pw');
+  if (adminPw) adminPw.addEventListener('keypress', e => { if(e.key==='Enter') handleAdminLogin(); });
+
+  const btnAdminOut = document.getElementById('btn-admin-out');
+  if (btnAdminOut) btnAdminOut.addEventListener('click', () => { adminToken=null; screen='gifts'; render(); });
+
+  const btnAddGift = document.getElementById('btn-add-gift');
+  if (btnAddGift) btnAddGift.addEventListener('click', addGift);
+
+  document.querySelectorAll('[data-del-gift]').forEach(btn =>
+    btn.addEventListener('click', () => deleteGift(Number(btn.dataset.delGift))));
+  document.querySelectorAll('[data-del-sel]').forEach(btn =>
+    btn.addEventListener('click', () => deleteSelection(Number(btn.dataset.delSel))));
+}
+
+loadGifts().then(render);
+</script>
+</body>
+</html>
