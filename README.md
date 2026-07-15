@@ -2,7 +2,7 @@
 
 > Sistema web de lista de presentes para eventos de casamento, desenvolvido para o Chá dos Noivos de Fernando & Priscila.
 
-🌐 **Acesse online:** [fernandopri.github.io/cha-noivos](https://fernandopri.github.io/cha-noivos)
+🌐 **Acesse online:** [https://ferparaguassu.github.io]([https://fernandopri.github.io/cha-noivos](https://ferparaguassu.github.io/))
 
 ---
 
