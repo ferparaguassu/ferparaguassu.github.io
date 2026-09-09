@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de Presentes · Fernando &amp; Priscila</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink-navy:#1d2f6f;
+    --slate-blue:#5b7fa6;
+    --soft-blue:#8fb3d9;
+    --pale-blue:#eaf2fa;
+    --paler-blue:#f5f9fd;
+    --text-grey:#5a6b7d;
+    --line:#c9dbeb;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{
+    background:var(--paler-blue);
+    font-family:'Jost',sans-serif;
+    color:var(--text-grey);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ── header ── */
+  .page-header{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:28px 24px 22px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .page-header::before,.page-header::after{
+    content:'';
+    position:absolute;
+    width:160px;height:160px;
+    border-radius:50%;
+    background:radial-gradient(circle,#d6e9f8 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .page-header::before{top:-60px;left:-60px;}
+  .page-header::after{bottom:-60px;right:-60px;}
+  .header-inner{position:relative;z-index:1;}
+  .header-script{
+    font-family:'Great Vibes',cursive;
+    font-size:2.8rem;
+    color:var(--slate-blue);
+    line-height:1;
+    margin-bottom:6px;
+  }
+  .header-names{
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    font-size:1.25rem;
+    color:var(--ink-navy);
+    margin-bottom:4px;
+  }
+  .header-sub{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:1rem;
+    color:var(--slate-blue);
+  }
+
+  /* ── search bar ── */
+  .search-wrap{
+    max-width:680px;
+    margin:24px auto 0;
+    padding:0 16px;
+    position:relative;
+  }
+  .search-wrap input{
+    width:100%;
+    padding:12px 44px 12px 18px;
+    border:1.5px solid var(--line);
+    border-radius:30px;
+    font-family:'Jost',sans-serif;
+    font-size:0.95rem;
+    color:var(--ink-navy);
+    background:#fff;
+    box-shadow:0 2px 8px rgba(91,127,166,.08);
+  }
+  .search-wrap input:focus{
+    outline:none;
+    border-color:var(--soft-blue);
+    box-shadow:0 0 0 3px rgba(143,179,217,.2);
+  }
+  .search-wrap svg{
+    position:absolute;right:30px;top:50%;transform:translateY(-50%);
+    width:18px;height:18px;stroke:var(--slate-blue);fill:none;stroke-width:2;pointer-events:none;
+  }
+
+  /* ── grid ── */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:20px;
+    max-width:1100px;
+    margin:28px auto 60px;
+    padding:0 20px;
+  }
+
+  /* ── card ── */
+  .gift-card{
+    background:#fff;
+    border-radius:14px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    box-shadow:0 2px 10px rgba(91,127,166,.07);
+    display:flex;
+    flex-direction:column;
+    transition:transform .25s ease,box-shadow .25s ease;
+  }
+  .gift-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 10px 24px rgba(91,127,166,.15);
+  }
+  .gift-card.hidden{display:none;}
+
+  .card-img-wrap{
+    aspect-ratio:1/1;
+    overflow:hidden;
+    background:var(--paler-blue);
+  }
+  .card-img-wrap img{
+    width:100%;height:100%;
+    object-fit:cover;
+    transition:transform .4s ease;
+  }
+  .gift-card:hover .card-img-wrap img{transform:scale(1.05);}
+
+  .card-body{
+    padding:14px 14px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    flex:1;
+  }
+  .card-name{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:500;
+    font-size:1.08rem;
+    color:var(--ink-navy);
+    line-height:1.3;
+  }
+
+  .buy-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    margin-top:auto;
+    padding:9px 14px;
+    background:var(--ink-navy);
+    color:#fff;
+    border-radius:8px;
+    font-family:'Jost',sans-serif;
+    font-size:0.8rem;
+    font-weight:500;
+    letter-spacing:.3px;
+    text-decoration:none;
+    transition:background .2s ease,transform .15s ease;
+    white-space:nowrap;
+    align-self:stretch;
+    justify-content:center;
+  }
+  .buy-btn:hover{background:#14224f;transform:translateY(-1px);}
+  .buy-btn svg{
+    width:14px;height:14px;
+    stroke:#fff;fill:none;stroke-width:2;flex-shrink:0;
+  }
+
+  /* ── empty state ── */
+  .empty{
+    text-align:center;
+    grid-column:1/-1;
+    padding:60px 20px;
+    color:var(--slate-blue);
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.2rem;
+    font-style:italic;
+  }
+
+  /* ── footer ── */
+  .footer{
+    text-align:center;
+    padding:28px 20px 40px;
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    color:var(--slate-blue);
+    font-size:1rem;
+    border-top:1px solid var(--line);
+    background:#fff;
+  }
+  .footer strong{
+    font-style:normal;
+    font-family:'Playfair Display',serif;
+    color:var(--ink-navy);
+  }
+
+  @media(max-width:480px){
+    .header-script{font-size:2.1rem;}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding:0 12px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="header-inner">
+    <div class="header-script">Lista de Presentes</div>
+    <p class="header-names">Fernando &amp; Priscila</p>
+    <p class="header-sub">Cada presente é uma forma especial de celebrar conosco</p>
+  </div>
+</header>
+
+<div class="search-wrap">
+  <input type="search" id="searchBox" placeholder="Buscar presente…" aria-label="Buscar presente">
+  <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</div>
+
+<div class="grid" id="grid">
+
+    <div class="gift-card" data-name="air fryer">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Air%20Frayer.jpg" alt="Air Fryer" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Air Fryer</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Air%20Fryer" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="azeiteiro">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Azeiteiro.jpeg" alt="Azeiteiro" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Azeiteiro</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Azeiteiro" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="batedeira">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Batedeira.webp" alt="Batedeira" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Batedeira</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Batedeira" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="bistequeira cerâmica">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Bisteiqueira%20Brinox%20Ceramic%20Life%20Sirus.webp" alt="Bistequeira Cerâmica" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Bistequeira Cerâmica</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Bistequeira%20Cer%C3%A2mica" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="bowl de cristal 720ml">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Bowl%20de%20crista%20720ml.jpg" alt="Bowl de Cristal 720ml" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Bowl de Cristal 720ml</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Bowl%20de%20Cristal%20720ml" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="bowl de cristal 1l">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Bowl%20de%20cristal%201L.jpg" alt="Bowl de Cristal 1L" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Bowl de Cristal 1L</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Bowl%20de%20Cristal%201L" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="bowl de cristal 300ml">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Bowl%20de%20cristal%20300ml.jpg" alt="Bowl de Cristal 300ml" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Bowl de Cristal 300ml</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Bowl%20de%20Cristal%20300ml" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="cabideira">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Cabideira.jpeg" alt="Cabideira" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Cabideira</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Cabideira" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="caminho de mesa">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Caminho%20de%20mesa%20%282%20pe%C3%A7as%29.jpeg" alt="Caminho de Mesa" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Caminho de Mesa</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Caminho%20de%20Mesa" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="centro de mesa">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Centro%20de%20mesa.jpeg" alt="Centro de Mesa" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Centro de Mesa</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Centro%20de%20Mesa" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="chaleira">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Chaleira.jpeg" alt="Chaleira" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Chaleira</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Chaleira" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="coberdrom">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Coberdrom.webp" alt="Coberdrom" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Coberdrom</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Coberdrom" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="colcha">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Colcha.webp" alt="Colcha" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Colcha</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Colcha" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="conjunto de xícaras com pires">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Conjunto%20de%206%20x%C3%ADcaras%20com%20pires.webp" alt="Conjunto de Xícaras com Pires" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Conjunto de Xícaras com Pires</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Conjunto%20de%20X%C3%ADcaras%20com%20Pires" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="conjunto de bowls inox">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Conjunto%20de%20bowls%20de%20inox.jpg" alt="Conjunto de Bowls Inox" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Conjunto de Bowls Inox</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Conjunto%20de%20Bowls%20Inox" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="conjunto de copos">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Conjunto%20de%20copos.webp" alt="Conjunto de Copos" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Conjunto de Copos</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Conjunto%20de%20Copos" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="guardanapos em tecido">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Conjunto%20de%20quardanapos%20em%20tecido.webp" alt="Guardanapos em Tecido" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Guardanapos em Tecido</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Guardanapos%20em%20Tecido" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="taças de sobremesa">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Conjunto%20de%20ta%C3%A7as%20de%20sobremesa.webp" alt="Taças de Sobremesa" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Taças de Sobremesa</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Ta%C3%A7as%20de%20Sobremesa" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="conjunto de taças">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Conjunto%20de%20ta%C3%A7as.webp" alt="Conjunto de Taças" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Conjunto de Taças</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Conjunto%20de%20Ta%C3%A7as" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="conjunto para banheiro">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Conjunto%20para%20banheiro.webp" alt="Conjunto para Banheiro" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Conjunto para Banheiro</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Conjunto%20para%20Banheiro" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="espremedor de frutas">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Espremedor.webp" alt="Espremedor de Frutas" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Espremedor de Frutas</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Espremedor%20de%20Frutas" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="faqueiro">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Faqueiro.jpg" alt="Faqueiro" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Faqueiro</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Faqueiro" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="fervedor / leiteira">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Fervedor%20%28leiteira%29.jpeg" alt="Fervedor / Leiteira" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Fervedor / Leiteira</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Fervedor%20/%20Leiteira" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="fogão">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Fog%C3%A3o.webp" alt="Fogão" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Fogão</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Fog%C3%A3o" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="geladeira">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Geladeira.jpeg" alt="Geladeira" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Geladeira</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Geladeira" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="jogo americano">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Jogo%20americano%20-%20marrom%20e%20preto.webp" alt="Jogo Americano" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Jogo Americano</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Jogo%20Americano" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="jogo de panelas">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Jogo%20de%20Panelas.webp" alt="Jogo de Panelas" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Jogo de Panelas</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Jogo%20de%20Panelas" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="jogo de potes de vidro">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Jogo%20de%20Potes%20de%20Vidro.webp" alt="Jogo de Potes de Vidro" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Jogo de Potes de Vidro</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Jogo%20de%20Potes%20de%20Vidro" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="jogo de assadeiras">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Jogo%20de%20assadeiras.jpeg" alt="Jogo de Assadeiras" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Jogo de Assadeiras</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Jogo%20de%20Assadeiras" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="jogo de banho">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Jogo%20de%20banho.webp" alt="Jogo de Banho" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Jogo de Banho</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Jogo%20de%20Banho" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="jogo de cama">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Jogo%20de%20cama.webp" alt="Jogo de Cama" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Jogo de Cama</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Jogo%20de%20Cama" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="passadeira para cozinha">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Jogo%20de%20passadeira%20para%20cozinha.webp" alt="Passadeira para Cozinha" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Passadeira para Cozinha</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Passadeira%20para%20Cozinha" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="utensílios em aço inox">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Jogo%20de%20utens%C3%ADlios%20em%20a%C3%A7o%20inox.webp" alt="Utensílios em Aço Inox" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Utensílios em Aço Inox</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Utens%C3%ADlios%20em%20A%C3%A7o%20Inox" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="liquidificador">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Liquidificador.webp" alt="Liquidificador" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Liquidificador</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Liquidificador" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="lixeira">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Lixeira.webp" alt="Lixeira" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Lixeira</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Lixeira" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="medidor culinário">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Medidor%20culin%C3%A1rio.webp" alt="Medidor Culinário" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Medidor Culinário</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Medidor%20Culin%C3%A1rio" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="micro-ondas">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Micro-ondas.webp" alt="Micro-ondas" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Micro-ondas</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Micro-ondas" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="panelão de pressão">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Panelao%20de%20press%C3%A3o.jpg" alt="Panelão de Pressão" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Panelão de Pressão</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Panel%C3%A3o%20de%20Press%C3%A3o" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="pegador em nylon">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Pegador%20em%20nylon.jpg" alt="Pegador em Nylon" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Pegador em Nylon</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Pegador%20em%20Nylon" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="porta doces / frutas">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Porta%20doces%20%28frutas%29.jpeg" alt="Porta Doces / Frutas" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Porta Doces / Frutas</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Porta%20Doces%20/%20Frutas" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="porta frios">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Porta%20frios.webp" alt="Porta Frios" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Porta Frios</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Porta%20Frios" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="prato de cristal para servir">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Prata%20de%20cristal%20para%20servir.jpg" alt="Prato de Cristal para Servir" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Prato de Cristal para Servir</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Prato%20de%20Cristal%20para%20Servir" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="pratos fundos">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Pratos%20fundos%20%286%20pe%C3%A7as%29.webp" alt="Pratos Fundos" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Pratos Fundos</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Pratos%20Fundos" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="pratos de sobremesa">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Pratos%20para%20sobremesa%20%286%20pe%C3%A7as%29.webp" alt="Pratos de Sobremesa" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Pratos de Sobremesa</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Pratos%20de%20Sobremesa" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="pratos rasos">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Pratos%20rasos%20%286%20pe%C3%A7as%29.webp" alt="Pratos Rasos" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Pratos Rasos</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Pratos%20Rasos" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="queijeira">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Queijeira.webp" alt="Queijeira" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Queijeira</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Queijeira" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="saleiro e paliteiro">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Saleiro%20e%20paliteiro.jpeg" alt="Saleiro e Paliteiro" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Saleiro e Paliteiro</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Saleiro%20e%20Paliteiro" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="saleiro">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Saleiro.jpeg" alt="Saleiro" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Saleiro</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Saleiro" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="sapateira para entrada">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Sapateira%20para%20entrada.jpeg" alt="Sapateira para Entrada" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Sapateira para Entrada</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Sapateira%20para%20Entrada" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="tapete de banheiro">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Tapete%20de%20banheiro.webp" alt="Tapete de Banheiro" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Tapete de Banheiro</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Tapete%20de%20Banheiro" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="vaso decorativo com bandeja">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Vaso%20decorativo%20com%20bandeja.jpeg" alt="Vaso Decorativo com Bandeja" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Vaso Decorativo com Bandeja</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Vaso%20Decorativo%20com%20Bandeja" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+    <div class="gift-card" data-name="vinagreiro">
+      <div class="card-img-wrap">
+        <img src="https://ferparaguassu.github.io/Imagens%20-%20lista%20de%20presente/Vinagreiro.jpeg" alt="Vinagreiro" loading="lazy">
+      </div>
+      <div class="card-body">
+        <p class="card-name">Vinagreiro</p>
+        <a class="buy-btn" href="https://www.mercadolivre.com.br/jm/search?as_word=Vinagreiro" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Comprar no Mercado Livre
+        </a>
+      </div>
+    </div>
+  <p class="empty" id="emptyMsg" style="display:none;">Nenhum presente encontrado.</p>
+</div>
+
+<footer class="footer">
+  <strong>Fernando &amp; Priscila</strong> · Casamento · 14 de novembro de 2026
+</footer>
+
+<script>
+  const searchBox = document.getElementById('searchBox');
+  const cards     = document.querySelectorAll('.gift-card');
+  const emptyMsg  = document.getElementById('emptyMsg');
+
+  searchBox.addEventListener('input', () => {
+    const q = searchBox.value.trim().toLowerCase();
+    let visible = 0;
+    cards.forEach(card => {
+      const match = card.dataset.name.includes(q);
+      card.classList.toggle('hidden', !match);
+      if(match) visible++;
+    });
+    emptyMsg.style.display = visible === 0 ? 'block' : 'none';
+  });
+</script>
+</body>
+</html>
