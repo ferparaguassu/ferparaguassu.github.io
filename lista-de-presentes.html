@@ -145,10 +145,23 @@
   .footer{text-align:center;padding:28px 20px 44px;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--slate-blue);font-size:1rem;border-top:1px solid var(--line);background:#fff;}
   .footer strong{font-style:normal;font-family:'Playfair Display',serif;color:var(--ink-navy);}
 
-  @media(max-width:480px){
+  @media(max-width:600px){
     .header-script{font-size:2.2rem;}
     .grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;padding:0 12px;}
     .modal-card{padding:28px 20px;}
+
+    /* botões empilhados no mobile */
+    .btn-row{flex-direction:column;gap:6px;}
+    .buy-btn-wrap{width:100%;}
+    .buy-btn{width:100%;padding:10px 8px;font-size:0.82rem;}
+    .choose-btn{width:100%;padding:10px 8px;font-size:0.82rem;white-space:normal;text-align:center;}
+
+    /* tooltip acima não corta */
+    .site-tooltip{font-size:0.68rem;padding:5px 10px;}
+
+    /* card body mais compacto */
+    .card-body{padding:10px 10px 12px;gap:8px;}
+    .card-name{font-size:0.97rem;}
   }
 </style>
 
