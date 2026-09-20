@@ -317,6 +317,11 @@ const GIFTS = [
   {nome:'Jogo de Utensílios em Aço Inox',           img:'Jogo de utensílios em aço inox.webp',           site:'Mercado Livre',   url:'https://www.mercadolivre.com.br/jogo-de-utensilios-utility-aco-inox-5-pecas-tramontina/p/MLB25950777'},
   {nome:'Pegador em Nylon',                         img:'Pegador em nylon.jpg',                          site:'Tramontina',      url:'https://www.tramontina.com.br/pegador-multiuso-tramontina-ability-em-nylon-vermelho/25163170.html'},
   {nome:'Bistequeira Brinox Ceramic Life',          img:'Bisteiqueira Brinox Ceramic Life Sirus.webp',   site:'Shopee',         url:'https://shopee.com.br/product/842996464/22897454021'},
+  {nome:'Frigideira Cerâmica',                       img:'frigideira ceramica.jpg',                       site:'Amazon',         url:'https://www.amazon.com.br/Frigideira-Antiaderente-Cer%C3%A2mica-Compat%C3%ADvel-El%C3%A9trico/dp/B0HH4VRSB2/'},
+  {nome:'Bandeja de Café da Manhã',                  img:'Bandeja de café da manhã.webp',                 site:'Mercado Livre',   url:'https://www.mercadolivre.com.br/bandeja-cafe-da-manha-cama-bambu-pes-dobraveis-e-alcas-mesa-portatil-multiuso-notebook/p/MLB73982089'},
+  {nome:'Jogo de Lençol',                            img:'Jogo de lençol.jpg',                            site:'Linda Casa',      url:'https://www.lindacasa.com.br/jogo-de-lencol-casal-4-pcs-400-branco/p'},
+  {nome:'Jogo de Toalha de Banho Buddemeyer',        img:'Jogo de toalha de banho.webp',                  site:'Mercado Livre',   url:'https://www.mercadolivre.com.br/jogo-toalha-banho-buddemeyer-vanilla-extra-soft-algodao-4pcs-cor-bege-1084-verde-1184/p/MLB50297900'},
+  {nome:'Processador',                               img:'Processador.avif',                              site:'Amazon',         url:'https://www.amazon.com.br/Mini-Processador-Turbo-Pratic-Mondial/dp/B08PPRYWZG/'},
   {nome:'Jogo de Cama (Shopee)',                    img:'lençol rosa.jpeg',                       site:'Shopee',         url:'https://shopee.com.br/product/418336777/58257129425'},
   {nome:'Cobre Leito Verde',                        img:'cobre leito.jpeg',                         site:'Mercado Livre',  url:'https://www.mercadolivre.com.br/kit-cobre-leito-colcha-casal-3-pecas-boutis-lisas-dupla-face-porta-travesseiro-aba-americana-grid-verde/p/MLB70247056'},
   {nome:'Bule de Inox',                             img:'chaleira_.jpeg',                              site:'Amazon',         url:'https://www.amazon.com.br/Bule-com-Bico-Inox-Tampa/dp/B077R6PT22'},
@@ -493,6 +498,7 @@ submitBtn.addEventListener('click', async () => {
     try {
       const templateParams = {
         nome_pessoa: nome,
+        email: email,
         email_pessoa: email,
         nome_presente: selectedGift
       };
