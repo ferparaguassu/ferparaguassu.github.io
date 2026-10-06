@@ -497,11 +497,12 @@ submitBtn.addEventListener('click', async () => {
     // ======== ENVIO DE E-MAIL COM EMAILJS ========
     try {
       const templateParams = {
-        nome_pessoa: nome,
-        email: email,
-        email_pessoa: email,
-        nome_presente: selectedGift
-      };
+  nome_pessoa: nome,
+  email: email,
+  email_pessoa: email,
+  nome_presente: selectedGift,
+  link_presente: GIFTS.find(g => g.nome === selectedGift)?.url || ''
+};
       
       // Enviando com o Service ID e o NOVO Template ID
       await emailjs.send('service_198m3uu', 'template_3rzey3z', templateParams);
