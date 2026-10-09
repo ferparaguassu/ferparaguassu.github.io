@@ -575,7 +575,7 @@ function renderAdminList() {
     if(db && db.disponivel === false) {
       count++;
       htmlStr += `<tr style="border-bottom:1px solid var(--pale-blue);">
-        <td style="padding:12px 10px; color:var(--ink-navy); font-weight:500;">${g.nome}</td>
+        <td style="padding:12px 10px; font-weight:500;"><a href="${g.url}" target="_blank" rel="noopener" style="color:var(--ink-navy);text-decoration:underline;">${g.nome}</a></td>
         <td style="padding:12px 10px; color:var(--text-grey);">${db.nome_pessoa || 'Desconhecido'}</td>
         <td style="padding:12px 10px; color:var(--text-grey);">${db.email_pessoa || '-'}</td>
       </tr>`;
