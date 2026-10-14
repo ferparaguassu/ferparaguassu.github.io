@@ -323,6 +323,8 @@ const GIFTS = [
   {nome:'Processador',                               img:'Processador.avif',                              site:'Amazon',         url:'https://www.amazon.com.br/Mini-Processador-Turbo-Pratic-Mondial/dp/B08PPRYWZG/'},
   {nome:'Jogo de Potes Herméticos',                  img:'Potes hermeticos.jpeg',                          site:'Magazine Luiza',  url:'https://www.magazineluiza.com.br/jogo-de-potes-de-vidro-hermetico-brinox-com-tampa-redondo-ekko-7-pecas/p/238409400/ud/poud/'},
   {nome:'Tábua de Café',                             img:'TABUA CAFE.jpeg',                             site:'Mercado Livre',   url:'https://www.mercadolivre.com.br/bandeja-bambu-alca-lateral-retangular-decoracao-cafe-40x28cm-bambu/p/MLB76070276'},
+  {nome:'Frigideira para Ovos',                      img:'frigideira ovos.jpeg',                          site:'Wolly Casa',      url:'https://www.wolycasa.com.br/products/frigideira-de-inducao-com-4-cavidades-granito-chef-bege-aluminio-revestimento-antiaderente-lyor'},
+  {nome:'Chaleira com Apito',                        img:'chaleira cha.jpeg',                             site:'Magazine Luiza',  url:'https://www.magazineluiza.com.br/chaleira-brinox-inox-com-apito-vanilla-27l-roma/p/238052700/ud/chcl/'},
   {nome:'Jogo de Cama (Shopee)',                    img:'lençol rosa.jpeg',                       site:'Shopee',         url:'https://shopee.com.br/product/418336777/58257129425'},
   {nome:'Cobre Leito Verde',                        img:'cobre leito.jpeg',                         site:'Mercado Livre',  url:'https://www.mercadolivre.com.br/kit-cobre-leito-colcha-casal-3-pecas-boutis-lisas-dupla-face-porta-travesseiro-aba-americana-grid-verde/p/MLB70247056'},
   {nome:'Bule de Inox',                             img:'chaleira_.jpeg',                              site:'Amazon',         url:'https://www.amazon.com.br/Bule-com-Bico-Inox-Tampa/dp/B077R6PT22'},
@@ -567,7 +569,8 @@ function renderAdminList() {
   htmlStr += '<tr style="border-bottom:2px solid var(--line); color:var(--slate-blue);">' +
              '<th style="padding:10px;">Presente</th>' +
              '<th style="padding:10px;">Convidado</th>' +
-             '<th style="padding:10px;">E-mail</th></tr>';
+             '<th style="padding:10px;">E-mail</th>' +
+             '<th style="padding:10px;">Link</th></tr>';
 
   let count = 0;
   GIFTS.forEach(g => {
@@ -575,9 +578,10 @@ function renderAdminList() {
     if(db && db.disponivel === false) {
       count++;
       htmlStr += `<tr style="border-bottom:1px solid var(--pale-blue);">
-        <td style="padding:12px 10px; font-weight:500;"><a href="${g.url}" target="_blank" rel="noopener" style="color:var(--ink-navy);text-decoration:underline;">${g.nome}</a></td>
+        <td style="padding:12px 10px; color:var(--ink-navy); font-weight:500;">${g.nome}</td>
         <td style="padding:12px 10px; color:var(--text-grey);">${db.nome_pessoa || 'Desconhecido'}</td>
         <td style="padding:12px 10px; color:var(--text-grey);">${db.email_pessoa || '-'}</td>
+        <td style="padding:12px 10px;"><a href="${g.url}" target="_blank" rel="noopener" style="color:var(--ink-navy);font-weight:500;text-decoration:underline;">Ver produto</a></td>
       </tr>`;
     }
   });
